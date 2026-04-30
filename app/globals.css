@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  /* Palette — reuse via var(--accent), Tailwind bg-accent / text-accent, etc. */
+  --accent: #0d7377;
+  --white: #ffffff;
+  --black: #000000;
+  --surface-deep: #0f2545;
+
+  --background: var(--white);
+  --foreground: var(--black);
+}
+
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-surface-deep: var(--surface-deep);
+  --color-white: var(--white);
+  --color-black: var(--black);
+  --font-sans: var(--font-dm-sans);
+  --font-heading: var(--font-plus-jakarta-sans);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Plus Jakarta Sans — @theme --font-jakarta does not emit a utility in v4; @utility does */
+@utility font-jakarta {
+  font-family: var(--font-plus-jakarta-sans);
+}
+
+/* Testimonials Swiper: equal-height slides, align cards in a row */
+.testimonials-swiper .swiper-wrapper {
+  align-items: stretch;
+}
+
+.testimonials-swiper .swiper-slide {
+  display: flex;
+  height: auto;
+  box-sizing: border-box;
+}
+
+.testimonials-swiper .swiper-slide > * {
+  width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+
