@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import Script from "next/script";
+
 import { Modal } from "@/components/ui/Modal";
 
 // ─── Calendly global type ─────────────────────────────────────────────────────
@@ -32,8 +33,8 @@ const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL ?? "";
 
 // Site palette — mirrors globals.css CSS variables (hex without #)
 const PALETTE = {
-  primaryColor:    "0d7377", // --accent (teal)
-  textColor:       "0f2545", // --surface-deep (dark navy)
+  primaryColor: "0d7377", // --accent (teal)
+  textColor: "0f2545", // --surface-deep (dark navy)
   backgroundColor: "ffffff",
 } as const;
 
@@ -47,13 +48,20 @@ function buildCalendlyUrl(prefill?: { name?: string; email?: string }): string {
   try {
     const url = new URL(CALENDLY_URL);
     // Colour params — require Calendly Standard plan or higher to take effect
-    url.searchParams.set("primary_color",    PALETTE.primaryColor);
-    url.searchParams.set("text_color",       PALETTE.textColor);
+    url.searchParams.set("primary_color", PALETTE.primaryColor);
+    url.searchParams.set("text_color", PALETTE.textColor);
     url.searchParams.set("background_color", PALETTE.backgroundColor);
     url.searchParams.set("hide_gdpr_banner", "1");
-    if (prefill?.name)  url.searchParams.set("name",  prefill.name);
-    if (prefill?.email) url.searchParams.set("email", prefill.email);
-    return url.toString();
+    let result = url.toString();
+    // URLSearchParams encodes spaces as "+"; Calendly shows "+" in the name field.
+    // encodeURIComponent uses %20 for spaces, which Calendly displays correctly.
+    if (prefill?.name) {
+      result += `${result.includes("?") ? "&" : "?"}name=${encodeURIComponent(prefill.name)}`;
+    }
+    if (prefill?.email) {
+      result += `&email=${encodeURIComponent(prefill.email)}`;
+    }
+    return result;
   } catch {
     return CALENDLY_URL;
   }
@@ -68,7 +76,7 @@ export function CalendlyWidget({
   prefill?: { name?: string; email?: string };
   onScheduled: () => void | Promise<void>;
 }) {
-  const containerRef  = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const initializedRef = useRef(false);
 
   const widgetUrl = buildCalendlyUrl(prefill);
@@ -84,10 +92,10 @@ export function CalendlyWidget({
       prefill: { name: prefill?.name, email: prefill?.email },
       // pageSettings as a secondary signal (URL params are primary)
       pageSettings: {
-        primaryColor:    PALETTE.primaryColor,
-        textColor:       PALETTE.textColor,
+        primaryColor: PALETTE.primaryColor,
+        textColor: PALETTE.textColor,
         backgroundColor: PALETTE.backgroundColor,
-        hideGdprBanner:  true,
+        hideGdprBanner: true,
       },
     });
   }, [widgetUrl, prefill?.name, prefill?.email]);
@@ -97,7 +105,7 @@ export function CalendlyWidget({
     const CSS = "https://assets.calendly.com/assets/external/widget.css";
     if (!document.querySelector(`link[href="${CSS}"]`)) {
       const link = document.createElement("link");
-      link.rel  = "stylesheet";
+      link.rel = "stylesheet";
       link.href = CSS;
       document.head.appendChild(link);
     }
@@ -192,6 +200,7 @@ function BookingConfirmationPanel() {
 
 // ─── Confirmation modal ───────────────────────────────────────────────────────
 
+/** Parent should navigate away (e.g. router.push("/")) — do not reset large forms here or the current page will flash before the route changes. */
 export function BookingConfirmationModal({
   isOpen,
   onClose,

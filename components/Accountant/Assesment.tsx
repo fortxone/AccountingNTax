@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { CalendlyWidget, BookingConfirmationModal } from "@/components/Accountant/BookingConsultationModal";
 import {
@@ -55,6 +56,7 @@ function CheckIcon({ className }: { className?: string }) {
 }
 
 export default function Assesment() {
+  const router = useRouter();
   const groupId = useId();
   const stepHeaderRef = useRef<HTMLDivElement>(null);
   const calendlyRef = useRef<HTMLDivElement>(null);
@@ -76,6 +78,7 @@ export default function Assesment() {
   const [completed, setCompleted] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
+  const [isSubmittingContact, setIsSubmittingContact] = useState(false);
 
   const question = ASSESSMENT_QUESTIONS[currentIndex];
 
@@ -137,7 +140,25 @@ export default function Assesment() {
     }
   };
 
-  const handleContactSubmit = () => {
+  const handleContactSubmit = async () => {
+    if (isSubmittingContact) return;
+    setIsSubmittingContact(true);
+    const emailPayload = {
+      assessment: summarizeAssessmentResponses(responses),
+      contact: contactInfo,
+    };
+    try {
+      const res = await fetch("/api/send-assessment-submitted", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(emailPayload),
+      });
+      if (!res.ok) console.error("[send-assessment-submitted]", await res.text());
+    } catch (err) {
+      console.error("[send-assessment-submitted]", err);
+    } finally {
+      setIsSubmittingContact(false);
+    }
     setShowContactForm(false);
     setCompleted(true);
   };
@@ -151,23 +172,16 @@ export default function Assesment() {
     setCurrentIndex(ASSESSMENT_STEP_COUNT - 1);
   };
 
-  const handleBackFromCompleted = () => {
-    setShowBooking(false);
-    setCompleted(false);
-    setShowContactForm(true);
-  };
+  /** Navigate home only — resetting assessment state here flashes the wizard before the route changes; unmount clears state when leaving the page. */
+  const handleCloseBookingModal = useCallback(() => {
+    router.push("/");
+  }, [router]);
 
-  const handleResetToStart = () => {
-    setShowBooking(false);
-    setBookingConfirmed(false);
-    setCompleted(false);
-    setShowContactForm(false);
-    setCurrentIndex(0);
-    setResponses(createEmptyResponses());
-    setContactInfo({ name: "", email: "", phone: "", referralCode: "" });
-  };
-
-  const showPreviousStepNav = completed || showContactForm || currentIndex > 0;
+  /** No “Previous step” once the assessment is completed (summary or Calendly). */
+  const showPreviousStepNav =
+    !completed &&
+    !isSubmittingContact &&
+    (showContactForm || currentIndex > 0);
 
   const ctaLabel = question?.ctaLabel ?? "Continue";
 
@@ -224,11 +238,7 @@ export default function Assesment() {
             <button
               type="button"
               onClick={
-                completed
-                  ? handleBackFromCompleted
-                  : showContactForm
-                    ? handlePreviousFromContact
-                    : handlePreviousStep
+                showContactForm ? handlePreviousFromContact : handlePreviousStep
               }
               className="inline-flex cursor-pointer items-center gap-2 rounded-lg px-1 py-2 font-sans text-sm font-semibold text-[#0F2545] transition hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F2545] md:text-[15px]"
             >
@@ -254,6 +264,7 @@ export default function Assesment() {
         ) : showContactForm ? (
           <ContactFormStep
             contactInfo={contactInfo}
+            isSubmitting={isSubmittingContact}
             onChange={(field, value) =>
               setContactInfo((prev) => ({ ...prev, [field]: value }))
             }
@@ -293,7 +304,7 @@ export default function Assesment() {
                 />
                 <BookingConfirmationModal
                   isOpen={bookingConfirmed}
-                  onClose={handleResetToStart}
+                  onClose={handleCloseBookingModal}
                 />
               </>
             ) : (
@@ -456,10 +467,12 @@ function AssessmentSummaryView({
 
 function ContactFormStep({
   contactInfo,
+  isSubmitting,
   onChange,
   onSubmit,
 }: {
   contactInfo: { name: string; email: string; phone: string; referralCode: string };
+  isSubmitting: boolean;
   onChange: (field: "name" | "email" | "phone" | "referralCode", value: string) => void;
   onSubmit: () => void;
 }) {
@@ -497,7 +510,8 @@ function ContactFormStep({
               value={contactInfo.name}
               onChange={(e) => onChange("name", e.target.value)}
               placeholder="Enter your full name"
-              className="rounded-[10px] border border-[#EEF0F4] bg-[#F8F9FB] px-4 py-3 text-[15px] text-[#1C2A3A] outline-none transition focus:border-surface-deep focus:ring-1 focus:ring-surface-deep/20"
+              disabled={isSubmitting}
+              className="rounded-[10px] border border-[#EEF0F4] bg-[#F8F9FB] px-4 py-3 text-[15px] text-[#1C2A3A] outline-none transition focus:border-surface-deep focus:ring-1 focus:ring-surface-deep/20 disabled:cursor-not-allowed disabled:opacity-70"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -513,7 +527,8 @@ function ContactFormStep({
               value={contactInfo.email}
               onChange={(e) => onChange("email", e.target.value)}
               placeholder="Enter your email address"
-              className="rounded-[10px] border border-[#EEF0F4] bg-[#F8F9FB] px-4 py-3 text-[15px] text-[#1C2A3A] outline-none transition focus:border-surface-deep focus:ring-1 focus:ring-surface-deep/20"
+              disabled={isSubmitting}
+              className="rounded-[10px] border border-[#EEF0F4] bg-[#F8F9FB] px-4 py-3 text-[15px] text-[#1C2A3A] outline-none transition focus:border-surface-deep focus:ring-1 focus:ring-surface-deep/20 disabled:cursor-not-allowed disabled:opacity-70"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -529,7 +544,8 @@ function ContactFormStep({
               value={contactInfo.phone}
               onChange={(e) => onChange("phone", e.target.value)}
               placeholder="Enter your phone number"
-              className="rounded-[10px] border border-[#EEF0F4] bg-[#F8F9FB] px-4 py-3 text-[15px] text-[#1C2A3A] outline-none transition focus:border-surface-deep focus:ring-1 focus:ring-surface-deep/20"
+              disabled={isSubmitting}
+              className="rounded-[10px] border border-[#EEF0F4] bg-[#F8F9FB] px-4 py-3 text-[15px] text-[#1C2A3A] outline-none transition focus:border-surface-deep focus:ring-1 focus:ring-surface-deep/20 disabled:cursor-not-allowed disabled:opacity-70"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -546,7 +562,8 @@ function ContactFormStep({
               value={contactInfo.referralCode}
               onChange={(e) => onChange("referralCode", e.target.value)}
               placeholder="Enter your referral code"
-              className="rounded-[10px] border border-[#EEF0F4] bg-[#F8F9FB] px-4 py-3 text-[15px] text-[#1C2A3A] outline-none transition focus:border-surface-deep focus:ring-1 focus:ring-surface-deep/20"
+              disabled={isSubmitting}
+              className="rounded-[10px] border border-[#EEF0F4] bg-[#F8F9FB] px-4 py-3 text-[15px] text-[#1C2A3A] outline-none transition focus:border-surface-deep focus:ring-1 focus:ring-surface-deep/20 disabled:cursor-not-allowed disabled:opacity-70"
             />
           </div>
         </div>
@@ -556,17 +573,24 @@ function ContactFormStep({
         <div className="flex justify-end">
           <button
             type="button"
-            disabled={!isValid}
+            disabled={!isValid || isSubmitting}
             onClick={onSubmit}
+            aria-busy={isSubmitting}
             className={cn(
               "inline-flex items-center gap-2 rounded-[8px] px-6 py-3 font-jakarta text-[15px] font-bold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-              isValid
+              isValid && !isSubmitting
                 ? "bg-accent cursor-pointer text-white hover:bg-accent/90"
                 : "cursor-not-allowed bg-[#d1d5db] text-white"
             )}
           >
-            Submit
-            <ContinueArrowIcon />
+            {isSubmitting ? (
+              "Submitting…"
+            ) : (
+              <>
+                Submit
+                <ContinueArrowIcon />
+              </>
+            )}
           </button>
         </div>
       </footer>

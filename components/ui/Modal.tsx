@@ -91,7 +91,7 @@ export function Modal({
         type="button"
         tabIndex={-1}
         aria-label="Close"
-        className="absolute cursor-pointer inset-0 bg-black/55 backdrop-blur-[2px]"
+        className="absolute inset-0 cursor-pointer bg-black/55 backdrop-blur-[2px]"
         onClick={onClose}
       />
       <div
