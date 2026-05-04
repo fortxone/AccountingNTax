@@ -11,18 +11,18 @@ const contactItems = [
     href: "mailto:consultant@accountingntax.co.uk",
     icon: <EmailIcon className="w-7 h-7 md:w-12 md:h-12" />,
   },
-  {
-    label: "Company Number",
-    value: "17191390",
-    icon: <CompanyNumberIcon className="w-7 h-7 md:w-12 md:h-12" />,
-  },
-  {
-    label: "Office Address",
-    value: "71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ",
-    href: "https://www.google.com/maps/search/?api=1&query=71-75+Shelton+Street%2C+Covent+Garden%2C+London%2C+WC2H+9JQ%2C+United+Kingdom",
-    openInNewTab: true,
-    icon: <LocationIcon className="w-7 h-7 md:w-11 md:h-11" />,
-  },
+  // {
+  //   label: "Company Number",
+  //   value: "17191390",
+  //   icon: <CompanyNumberIcon className="w-7 h-7 md:w-12 md:h-12" />,
+  // },
+  // {
+  //   label: "Office Address",
+  //   value: "71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ",
+  //   href: "https://www.google.com/maps/search/?api=1&query=71-75+Shelton+Street%2C+Covent+Garden%2C+London%2C+WC2H+9JQ%2C+United+Kingdom",
+  //   openInNewTab: true,
+  //   icon: <LocationIcon className="w-7 h-7 md:w-11 md:h-11" />,
+  // },
   {
     label: "Office Hours",
     value: "Mon–Fri 9am–5:30pm GMT",
@@ -73,14 +73,14 @@ export default function ContactUs() {
                 const linkProps =
                   href !== undefined
                     ? {
-                        href,
-                        ...(openInNewTab
-                          ? {
-                              target: "_blank" as const,
-                              rel: "noopener noreferrer" as const,
-                            }
-                          : {}),
-                      }
+                      href,
+                      ...(openInNewTab
+                        ? {
+                          target: "_blank" as const,
+                          rel: "noopener noreferrer" as const,
+                        }
+                        : {}),
+                    }
                     : null;
 
                 const iconBoxInteractive =
