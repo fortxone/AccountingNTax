@@ -94,14 +94,14 @@ export default function HowItWorks() {
               ))}
             </ul>
           </div>
-          <div className="relative flex w-full flex-1 justify-center xl:justify-end md:h-[740px] md:w-[604px] ">
-            <div className="overflow-hidden rounded-[40px]">
+          <div className="relative flex w-full flex-1 justify-center xl:justify-end md:h-[740px] md:w-[604px]">
+            <div className="relative aspect-square w-full max-w-[604px] overflow-hidden rounded-[40px] lg:aspect-604/740 lg:h-auto lg:w-[604px] lg:max-w-none">
               <Image
                 src={howItWorksImage}
                 alt=""
-                width={604}
-                height={740}
-                className="object-cover object-center w-full aspect-square lg:aspect-auto lg:w-auto lg:h-[740px]"
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 1023px) min(100vw, 604px), 604px"
               />
             </div>
           </div>

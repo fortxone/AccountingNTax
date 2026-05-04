@@ -334,3 +334,17 @@ export const TrustStarIcon = (props: SVGProps<SVGSVGElement>) => (
         />
     </svg>
 )
+
+export const CompanyNumberIcon = (props: SVGProps<SVGSVGElement>) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        {...props}
+    >
+        <path
+            fill="#fff"
+            d="M4 21h16v-2H4v2Zm2-2V9l6-3.5L18 9v10h-2v-5h-4v5H6Zm4 0h4v-3h-4v3Z"
+        />
+    </svg>
+);

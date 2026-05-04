@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
 import {
   CalendlyWidget,
@@ -216,6 +217,7 @@ function CalendlyStep({
 type Step = "form" | "calendly";
 
 export default function ConsultationBooking() {
+  const router = useRouter();
   const [step, setStep] = useState<Step>("form");
   const [confirmed, setConfirmed] = useState(false);
 
@@ -241,15 +243,9 @@ export default function ConsultationBooking() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  const EMPTY_FORM: FormData = { name: "", address: "", email: "", phone: "", reason: "" };
-
-  function resetAll() {
-    setConfirmed(false);
-    setStep("form");
-    setForm(EMPTY_FORM);
-    setFormErrors({});
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  const handleCloseBookingModal = useCallback(() => {
+    router.push("/");
+  }, [router]);
 
   async function handleScheduled() {
     fetch("/api/send-consultation", {
@@ -320,7 +316,7 @@ export default function ConsultationBooking() {
 
       <BookingConfirmationModal
         isOpen={confirmed}
-        onClose={resetAll}
+        onClose={handleCloseBookingModal}
       />
     </section>
   );

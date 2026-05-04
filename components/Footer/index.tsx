@@ -19,6 +19,7 @@ const legalLinks = [
   { href: "/privacy-policy", label: "Privacy Policy" },
   { href: "/terms-&-conditions", label: "Terms & Conditions" },
   { href: "/cookie-policy", label: "Cookie Policy" },
+  { href: "/legal-notice", label: "Legal Notice" },
 ] as const;
 
 const trustPoints = [
