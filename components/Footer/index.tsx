@@ -24,7 +24,7 @@ const legalLinks = [
 
 const trustPoints = [
   "Specialists matched to your business needs.",
-  "Matched to your specific requirements.",
+  // "Matched to your specific requirements.",
   "Signed up in as little as 1 hour.",
   "accountant-matching service is completely free to use.",
   "Compare quotes before deciding.",
@@ -111,7 +111,7 @@ export default function Footer() {
                 <LinkedInIcon />
               </a> */}
               <a
-                href="https://www.facebook.com/profile.php?id=61588854249444"
+                href="https://www.facebook.com/share/1SDAVJopRG/?mibextid=wwXIfr"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -120,7 +120,7 @@ export default function Footer() {
                 <FacebookIcon />
               </a>
               <a
-                href="https://www.instagram.com/accountingntax.co.uk/"
+                href="https://www.instagram.com/accountingntax.co.uk.1?igsh=bXdmNDMyZzUxMm1l&utm_source=qr"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
