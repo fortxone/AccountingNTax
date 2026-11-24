@@ -29,12 +29,11 @@ const steps: { title: string; description: ReactNode; iconSrc: string }[] = [
     iconSrc: "/images/home/compare.png",
   },
   {
-    title: "Claim Your £50 Amazon Gift Voucher",
+    title: "Claim Your £20-£50 Amazon Gift Voucher",
     description: (
       <>
-        Once you choose your accountant through AccountingNTax, you will receive a{" "}
-        <strong>£50 Amazon gift voucher</strong> as a thank-you for using our service. This offer
-        applies once you have successfully signed up with one of the recommended accounting firms.
+        Sign up with one of our recommended accounting firms and share your experience of using{" "}
+        <strong>AccountingNTax</strong> as a thank-you for your time and honest feedback, You could receive an Amazon gift voucher worth £20-£50.
       </>
     ),
     iconSrc: "/images/home/discount.png",
