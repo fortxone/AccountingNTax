@@ -12,6 +12,7 @@ const exploreLinks = [
   { href: "/about-us", label: "About Us" },
   { href: "/our-services", label: "Our Services" },
   { href: "/my-accountant", label: "Find My Accountant" },
+  { href: "/become-a-partner", label: "Become a Partner" },
   { href: "/contact-us", label: "Contact Us" },
 ] as const;
 
