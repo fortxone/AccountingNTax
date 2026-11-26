@@ -41,14 +41,16 @@ export default function BecomeAPartner() {
         subtitle="Join our network of trusted accounting firms and connect with potential clients whose requirements match your expertise and the services you offer."
         subtitleMaxWidth="max-w-[1000px]"
       >
-        <Button
-          type="button"
-          onClick={() => setShowForm(true)}
-          aria-expanded={showForm}
-          aria-controls={showForm ? "partner-registration" : undefined}
-        >
-          Register Your Interest
-        </Button>
+                <div className="md:pb-[90px]">
+          <Button
+            type="button"
+            onClick={() => setShowForm(true)}
+            aria-expanded={showForm}
+            aria-controls={showForm ? "partner-registration" : undefined}
+          >
+            Register Your Interest
+          </Button>
+        </div>
       </PageHero>
 
       <section
