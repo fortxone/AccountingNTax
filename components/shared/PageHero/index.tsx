@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 
 import { Text } from "@/components/ui/Text";
@@ -8,10 +9,20 @@ export type PageHeroProps = {
   title: string;
   subtitle?: string;
   subtitleMaxWidth?: string;
+  /** Optional small line shown above the title. */
+  eyebrow?: string;
+  /** Optional content shown under the subtitle, e.g. a call-to-action button. */
+  children?: ReactNode;
 };
 
 
-export default function PageHero({ title, subtitle, subtitleMaxWidth = "max-w-[681px]" }: PageHeroProps) {
+export default function PageHero({
+  title,
+  subtitle,
+  subtitleMaxWidth = "max-w-[681px]",
+  eyebrow,
+  children,
+}: PageHeroProps) {
   return (
     <section
       className="relative isolate flex min-h-[440px] flex-col overflow-hidden md:min-h-[500px]  bg-[#0F2545B2]"
@@ -30,6 +41,12 @@ export default function PageHero({ title, subtitle, subtitleMaxWidth = "max-w-[6
       <div className="relative z-10 flex pt-40 md:pt-0 md:pb-0 mb-20 md:mb-0  pb-10  flex-1 flex-col">
 
         <div className="flex  flex-1 flex-col justify-start  items-center md:justify-center xl:justify-start px-5 lg:pt-[100px] xl:pt-[220px] text-center ">
+          {eyebrow && (
+            <p className="mb-3 font-sans text-[13px] font-semibold uppercase tracking-[2px] text-white/80 md:text-[14px]">
+              {eyebrow}
+            </p>
+          )}
+
           <Text
             as="h1"
             id="page-hero-heading"
@@ -46,6 +63,8 @@ export default function PageHero({ title, subtitle, subtitleMaxWidth = "max-w-[6
               {subtitle}
             </Text>
           )}
+
+          {children && <div className="mt-8">{children}</div>}
         </div>
       </div>
     </section>

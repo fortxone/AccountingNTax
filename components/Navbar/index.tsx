@@ -14,6 +14,7 @@ const navLinks = [
     { href: "/about-us", label: "About Us" },
     { href: "/our-services", label: "Our Services" },
     { href: "/my-accountant", label: "Find My Accountant" },
+    { href: "/become-a-partner", label: "Become a Partner" },
 ] as const;
 
 export default function Navbar() {
